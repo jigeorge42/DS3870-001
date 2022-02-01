@@ -1,28 +1,53 @@
 $(document).on('click','#btnSignIn',function()
 {
-    console.log('btnSignIn Clicked');
-    let strUserName = '';
-    strUserName=$('#txtEmail').val();
-    console.log('set value of strUserName = ' + strUserName);
-    localStorage.setItem('Username', strUserName);
-    console.log('Set local storage username');
-    console.log($('txtPassword').val());
-
-    if($('#txtPassword').val())
+    var objNewSessionResponse;
+    let blnError = true;
+    let strErrorMessage = '';
+    if(!$('#txtEmail').val())
     {
-        console.log('Password exists');
+        blnError = true;
+        strErrorMessage += '<p>Email/username is blank</p>';
+    }
+    if(!$('#txtPassword').val())
+    {
+        blnError = true;
+        strErrorMessage += '<p>Password is blank</p>';
+    }
+
+    if(blnError == true)
+    {
+        Swal.fire({
+            icon: 'error',
+            title: 'Missing Data...',
+            html: strErrorMessage
+          })
     }
     else
     {
-        console.log('Password Blank');
+       var objNewSesionPromise =$.post('https://www.swollenhippo.com/DS3870/newSession.php',{ strUsername: $('#txtEmail').val(), strPassword:$('#txtPassword').val()}, function(result){
+        objNewSessionResponse = JSON.parse(result);
+      
+         })
     }
 
-    if($('#txtEmail').val())
+    $.when(objNewSesionPromise).done(function()
     {
-        console.log('Username Exists');
-    }
-    else
-    {
-        console.log('Username Blank');
-    }
+        if(objNewSessionResponse.Outcome == 'Login failed')
+        {
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Failed',
+                html: 'Please review Username and password'
+            })
+        }
+        else
+        {
+            sessionStorage.setItem('HippoSessonID',objNewSessionResponse.Outcome);
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Complete',
+                html: 'Nice'
+            })
+        }
+    })
 })
