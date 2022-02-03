@@ -54,11 +54,7 @@ $(document).on('click','#btnSignIn',function()
         else
         {
             sessionStorage.setItem('HippoSessonID',objNewSessionResponse.Outcome);
-            Swal.fire({
-                icon: 'error',
-                title: 'Login Complete',
-                html: 'Nice'
-            })
+            window.location.href = 'index.html';
         }
     })
 

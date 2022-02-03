@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HippoCare - Dashboard</title>
+    <link rel="stylesheet" href="Css/Lib/bootstrap.min.css">
+    <link rel="stylesheet" href="Css/Lib/_bootswatch.scss">
+</head>
+<body class= bg-primary>
+   
+
+    <script src= "Js/Lib/jquery-3.6.0.min.js"></script>
+    <script src = "Js/Lib/bootstrap.bundle.min.js"></script>
+    <script src = "Js/Lib/sweetalert.js"></script>
+    <script src = "Js/app.js"></script>
+    <script>
+        var arrEmployees;
+        $.getJSON('https://www.swollenhippo.com/getEmployeesByAPIKey.php?APIKey=Mickey2021!', function(result){
+            console.log(result);
+            arrEmployees = result;
+            $.each(arrEmployees,function(i,person){
+                console.log(person.FirstName)
+            })
+        })
+
+        function buildEmployeeCards(person){
+            
+          let strHtml = '<div class="display: flex; justify-content: center;align-items: center;"id="people cards"></div>';
+           strHtml = '<div class="card col-2" style ="margin: auto">';
+            strHtml = ' <img src="Css/Lib/hippo.png" alt="Hippo" class="p-5">';
+            strHtml = ' <h2 class="text-center mb-1"><a href="mailto:'+person.email + '"><span class="fw-bolder">'+person.FirstName+'</span>'+person.LastName+'</a></h2>';
+            strHtml = '<h5 class= "text-cente mb-3">'+person.Position+'</h5>';
+            strHtml = '<div class = "row">';
+                strHtml = '  <div class ="col">';
+                    strHtml = '  <h5 class = "text-center mb-5">Hire date</h5>';
+                    strHtml = ' <h3 Class = "col text-center">'+person.HireDate+'</h3>';
+                    strHtml = '  </div>';
+                    strHtml = '<div Class = "col"';
+                    strHtml = '   <h5 class = "text-center m-0" >Pay Rate</h5>';
+                    strHtml = '  <h3 class= "col text-center">'+person.HourlyRate+'</h3>';
+                    strHtml = ' </div>';
+                    strHtml = ' </div>';
+
+                    strHtml = '  </div>';
+                    strHtml = '</div>';
+
+                    $('#peopleCards').append(strHtml);
+        }
+    </script>
+</body>
+</html>
