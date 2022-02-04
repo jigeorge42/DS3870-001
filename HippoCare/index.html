@@ -9,13 +9,20 @@
     <link rel="stylesheet" href="Css/Lib/_bootswatch.scss">
 </head>
 <body>
+    <select id="cboTaskCategory" class="form-control">
+
+    </select>
     <script src= "Js/Lib/jquery-3.6.0.min.js"></script>
     <script src = "Js/Lib/bootstrap.bundle.min.js"></script>
     <script src = "Js/Lib/sweetalert.js"></script>
     <script src = "Js/app.js"></script>
     <script>
         if(sessionStorage.getItem('HippoSessionID')){
-
+            $.getJSON('https://www.swollenhippo.com/DS3870/getTaskCategoriesBySessionID.php?strSessionID=' + sessionStorage.getItem('HippoSessionID'), 
+            function(result){})
+            $.each(result,function(i,category){
+                $('#cboTaskCategory').append('<option value="'+ category.categoryID + '">' + category.description + '</option>');
+            })
         } else{
             window.location.href='login.html';
         }
