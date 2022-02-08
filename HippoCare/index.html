@@ -19,12 +19,14 @@
     <script>
         if(sessionStorage.getItem('HippoSessionID')){
             $.getJSON('https://www.swollenhippo.com/DS3870/getTaskCategoriesBySessionID.php?strSessionID=' + sessionStorage.getItem('HippoSessionID'), 
-            function(result){})
-            $.each(result,function(i,category){
-                $('#cboTaskCategory').append('<option value="'+ category.categoryID + '">' + category.description + '</option>');
+            function(result){
+                $.each(result,function(i,category){
+                $('#cboTaskCategory').append('<option value="'+ category.CategoryID + '">' + category.Description + '</option>');
             })
+            })
+           
         } else{
-            window.location.href='login.html';
+            window.location.href='HippoLogin.html';
         }
     </script>
 </body>
