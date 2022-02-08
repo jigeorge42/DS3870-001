@@ -29,8 +29,35 @@ $(document).on('click','#btnNewAccount',function(){
 
 })
     
-
-
+      $(document).on('click','#btnnewAccount',function()
+{​
+    let strMyUsername = $('#txtUsername').val();
+    let strMyPassword = $('#txtPassword').val();
+    $.post('https://www.swollenhippo.com/DS3870/Tasks/newAccount.php',{​ strUsername: strMyUsername, strPassword: strMyPassword }​,function(result){​
+        let objResult = JSON.parse(result);
+        if(objResult.Outcome == 'New User Created'){​
+            Swal.fire({​
+                icon: 'success',
+                title: 'User Created',
+                html: '<p>Your account was successfuly created.  Click OK to go back to login</p>'
+            }​).then((result)=>{​
+                window.location.href = 'login.html';
+            }​)
+        }​ else if(objResult.Outcome == 'User Already Exists'){​
+            Swal.fire({​
+                icon: 'error',
+                title: 'User Not Created',
+                html: '<p>Your account was not successfuly created because user already exists</p>'
+            }​)
+        }​ else {​
+            Swal.fire({​
+                icon: 'error',
+                title: 'User Not Created',
+                html: '<p>Please check your username and password and then try again.</p>'
+            }​)
+        }​
+    }​)
+}​)
 $(document).on('click','#btnLogin',function(){​
     let strMyUsername = $('#txtUsername').val();
     let strMyPassword = $('#txtPassword').val();
