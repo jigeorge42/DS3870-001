@@ -3,7 +3,7 @@ $(document).on('click','#btnSignIn',function()
     var objNewSessionResponse;
     let blnError = false;
     let strErrorMessage = '';
-    if(!$('#txtEmail').val())
+    if($('#txtEmail').val() == false)
     {
         blnError = true;
         strErrorMessage += '<p>Email/username is blank</p>';
