@@ -1,7 +1,40 @@
 $(document).on('click','#btnNewAccount',function(){
     let stryMyUsername = $('#txtUsername').val();
     let strMyPassword = $('#txtPassword').val();
-    $.post('https://www.swollenhippo.com/DS3870/Tasks/newAccount.php',{strUsername: stryMyUsername, strPassword: strMyPassword}, function(result){
+    let blnError = false;
+    let strErrorMessage = '';
+
+    if($('#txtUsername').val() == false)
+    {
+        blnError = true;
+        strErrorMessage += '<p>Email/username is blank</p>';
+    }
+    else if(validUsernameFormat($('#txtUsername').val()) == false){
+        blnError = true;
+        strErrorMessage +='<p>Email/Username is not valid</p>';
+    }
+    
+    if(!$('#txtPassword').val())
+    {
+        blnError = true;
+        strErrorMessage += '<p>Password is blank</p>';
+    }
+    else if(validPasswordFormat($('#txtPassword').val())== false)
+    {
+        blnError = true;
+        strErrorMessage +='<p>Password is blank</p>';
+    }
+
+    if(blnError == true)
+    {
+        Swal.fire({
+            icon: 'error',
+            title: 'Missing Data...',
+            html: strErrorMessage
+          })
+    }
+    
+    else{  $.post('https://www.swollenhippo.com/DS3870/Tasks/newAccount.php',{strUsername: stryMyUsername, strPassword: strMyPassword}, function(result){
         let objResult = JSON.parse(result);
         if(objResult.outcome == 'New User Created'){
             Swal.fire({
@@ -25,30 +58,90 @@ $(document).on('click','#btnNewAccount',function(){
             html: '<p>Please check username and password and try agian</p>'
            })
        }
-   })
+   })}
+
+   function validUsernameFormat(strUsername){
+    let reg = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+   let blnMatchesFormat = reg.test(strUsername);
+    return blnMatchesFormat;  
+    }
+
+    function validPasswordFormat(strPassword){
+        let reg = /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,64})/;
+        return reg.test(strPassword);
+    }
+  
 
 })
+
+
+
+
+    $(document).on('click','#btnLogin',function(){
+        let strMyUsername = $('#txtUsername').val();
+        let strMyPassword = $('#txtPassword').val();
+        let blnError = false;
+        let strErrorMessage = '';
     
-
-
-$(document).on('click','#btnLogin',function(){
-    let strMyUsername = $('#txtUsername').val();
-    let strMyPassword = $('#txtPassword').val();
-    $.post('https://www.swollenhippo.com/DS3870/Tasks/newSession.php',{strUsername: strMyUsername, strPassword: strMyPassword},function(result){
-        let objResult = JSON.parse(result);
-        if(objResult.Outcome == 'Login Failed'){
+        if($('#txtUsername').val() == false)
+        {
+            blnError = true;
+            strErrorMessage += '<p>Email/username is blank</p>';
+        }
+        else if(validUsernameFormat($('#txtUsername').val()) == false){
+            blnError = true;
+            strErrorMessage +='<p>Email/Username is not valid</p>';
+        }
+        
+        if(!$('#txtPassword').val())
+        {
+            blnError = true;
+            strErrorMessage += '<p>Password is blank</p>';
+        }
+        else if(validPasswordFormat($('#txtPassword').val())== false)
+        {
+            blnError = true;
+            strErrorMessage +='<p>Password is blank</p>';
+        }
+    
+        if(blnError == true)
+        {
             Swal.fire({
                 icon: 'error',
-                title: 'Username or Password is Incorrect',
-                html: '<p>Verify your username and password and try again</p>'
-           })
-       } else {
-            sessionStorage.setItem('HippoTaskID', objResult.Outcome);
-            window.location.href = 'index.html';
-       }
-   })
-})
-$(document).on('click','#btnAddTask',function(){
+                title: 'Missing Data...',
+                html: strErrorMessage
+              })
+        }
+        else{ 
+            $.post('https://www.swollenhippo.com/DS3870/Tasks/newSession.php',{strUsername: strMyUsername, strPassword: strMyPassword},function(result){
+            let objResult = JSON.parse(result);
+            if(objResult.Outcome == 'Login Failed'){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Username or Password is Incorrect',
+                    html: '<p>Verify your username and password and try again</p>'
+               })
+           } else {
+                sessionStorage.setItem('HippoTaskID', objResult.Outcome);
+                window.location.href = 'index.html';
+           }
+       })}
+
+       function validUsernameFormat(strUsername){
+        let reg = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+       let blnMatchesFormat = reg.test(strUsername);
+        return blnMatchesFormat;  
+        }
+    
+        function validPasswordFormat(strPassword){
+            let reg = /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,64})/;
+            return reg.test(strPassword);
+        }
+       
+    })
+
+$(document).on('click','#btnAddTask',function()
+{
     let strMySessionID = sessionStorage.getItem('HippoTaskID');
     $.getJSON('https://www.swollenhippo.com/DS3870/Tasks/verifySession.php', {strSessionID: strMySessionID}, function(result){
         if(result.Outcome == 'Valid Session'){
@@ -56,7 +149,61 @@ $(document).on('click','#btnAddTask',function(){
             let strMyLocation = $('#txtLocation').val();
             let strMyDate = $('#txtDueDate').val();
             let strMyNotes = $('#txtNotes').val();
-            $.post('https://www.swollenhippo.com/DS3870/Tasks/newTask.php',{ strSessionID: strMySessionID, strLocation:strMyLocation, strTaskName:strMyTaskName, datDueDate:strMyDate,strNotes:strMyNotes},function(result){
+            let blnError = false;
+            let strErrorMessage = '';
+
+            function validTaskFormat (strMyTaskName){
+                let reg = /((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{250})/;
+                let taskCheck = reg.test(strMyTaskName);
+                return(taskCheck);
+            }
+
+            function validLocationFormat (strMyLocation){
+                let reg = /((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{250})/;
+                return reg.test(strMyLocation);
+            }
+
+            function validDateFormat (strMyDate){
+                let reg =  /^(([0-9]{4})((-[0-9]{2}){2}(( |T)?([0-9]{2}:){2}[0-9]{2}((\+[0-9]{2}(:[0-9]{2})?)|Z)?)?|(-W[0-9]{2}(-[1-7])?)|(-[1-3]?[0-9]{2})))$/;
+                return reg.test(strMyDate);
+            }
+
+            function validNotesFormat (strMyNotes){
+                let reg = /^.{1,250}$/;
+                return reg.test(strMyNotes);
+            }
+
+            if(validTaskFormat == false)
+            {
+                blnError = true;
+                strErrorMessage +='<p>Task needs to be less than 250 characters</p>';
+            }
+            
+            if(validLocationFormat == false){
+                blnError = true;
+                strErrorMessage +='Loacation needs to be less than 250 Char';
+            }
+
+            if(validDateFormat == false){
+                blnError = true;
+                strErrorMessage +='Invalid date format';
+            }
+
+            if(validNotesFormat == false){
+                blnError = true;
+                strErrorMessage +='Notes need to be less than 64kb';
+            }
+        
+            if(blnError == true)
+            {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error...',
+                    html: strErrorMessage
+                  })
+            }
+
+            else{  $.post('https://www.swollenhippo.com/DS3870/Tasks/newTask.php',{ strSessionID: strMySessionID, strLocation:strMyLocation, strTaskName:strMyTaskName, datDueDate:strMyDate,strNotes:strMyNotes},function(result){
                 let objResult = JSON.parse(result);
                 if(objResult.Outcome != 'Error'){
                     Swal.fire({
@@ -70,23 +217,27 @@ $(document).on('click','#btnAddTask',function(){
                       $('#txtLocation').val('');
                       $('#txtDueDate').val('');
                       $('#txtNotes').val('');
-               } else {
+                     } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Task Not Added',
                         html: '<p>Verify your task data and try again</p>'
-                   })
-               }
-           })
-       } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Expired Session',
-                html: '<p>Oops, appears your session has expired.  Click OK to go to login</p>'
-           }).then((result)=>{
-                sessionStorage.removeItem('HippoTaskID');
-                window.location.href = 'login.html';
-           })
-       }
-   })
+                    })
+                    }
+                })
+                    
+           
+            }} else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Expired Session',
+                    html: '<p>Oops, appears your session has expired.  Click OK to go to login</p>'
+            }).then((result)=>{
+                    sessionStorage.removeItem('HippoTaskID');
+                    window.location.href = 'login.html';
+            })
+             }
+        
+
+              
 })
