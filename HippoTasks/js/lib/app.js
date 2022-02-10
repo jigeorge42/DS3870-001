@@ -1,7 +1,7 @@
 $(document).on('click','#btnNewAccount',function(){
     let stryMyUsername = $('#txtUsername').val();
     let strMyPassword = $('#txtPassword').val();
-    $.post('https://www.swollenhippo.com/DS3870/Tasks/newAccount.php',{strUserame: stryMyUsername, strPassword: strMyPassword}, function(result){
+    $.post('https://www.swollenhippo.com/DS3870/Tasks/newAccount.php',{strUsername: stryMyUsername, strPassword: strMyPassword}, function(result){
         let objResult = JSON.parse(result);
         if(objResult.outcome == 'New User Created'){
             Swal.fire({
@@ -9,23 +9,23 @@ $(document).on('click','#btnNewAccount',function(){
                 title: 'User Created',
                 html: '<p>Your account was successful</p>'
 
-            }).then((result)=>{
+           }).then((result)=>{
                 window.location.href = 'login.html';
-            })
-        } else if(objResult.outcome == 'User already exists'){
+           })
+       } else if(objResult.outcome == 'User already exists'){
             Swal.fire({
                 icon: 'error',
                 title: 'User not Created',
                 html: '<p>Your account was not successful. User already exists</p>'
-            })
-        } else {
+           })
+       } else {
             Swal.fire({
             icon: 'error',
             title: 'User not Created',
             html: '<p>Please check username and password and try agian</p>'
-            })
-        }
-    })
+           })
+       }
+   })
 
 })
     
@@ -58,62 +58,62 @@ $(document).on('click','#btnnewAccount', function() {
     }​)
 })
 
-$(document).on('click','#btnLogin',function(){​
+$(document).on('click','#btnLogin',function(){
     let strMyUsername = $('#txtUsername').val();
     let strMyPassword = $('#txtPassword').val();
-    $.post('https://www.swollenhippo.com/DS3870/Tasks/newSession.php',{​ strUsername: strMyUsername, strPassword: strMyPassword }​,function(result){​
+    $.post('https://www.swollenhippo.com/DS3870/Tasks/newSession.php',{strUsername: strMyUsername, strPassword: strMyPassword},function(result){
         let objResult = JSON.parse(result);
-        if(objResult.Outcome == 'Login Failed'){​
-            Swal.fire({​
+        if(objResult.Outcome == 'Login Failed'){
+            Swal.fire({
                 icon: 'error',
                 title: 'Username or Password is Incorrect',
                 html: '<p>Verify your username and password and try again</p>'
-            }​)
-        }​ else {​
+           })
+       } else {
             sessionStorage.setItem('HippoTaskID', objResult.Outcome);
             window.location.href = 'index.html';
-        }​
-    }​)
-}​)
-$(document).on('click','#btnAddTask',function(){​
+       }
+   })
+})
+$(document).on('click','#btnAddTask',function(){
     let strMySessionID = sessionStorage.getItem('HippoTaskID');
-    $.getJSON('https://www.swollenhippo.com/DS3870/Tasks/verifySession.php', {​strSessionID: strMySessionID}​, function(result){​
-        if(result.Outcome == 'Valid Session'){​
+    $.getJSON('https://www.swollenhippo.com/DS3870/Tasks/verifySession.php', {strSessionID: strMySessionID}, function(result){
+        if(result.Outcome == 'Valid Session'){
             let strMyTaskName = $('#txtTaskName').val();
             let strMyLocation = $('#txtLocation').val();
             let strMyDate = $('#txtDueDate').val();
             let strMyNotes = $('#txtNotes').val();
-            $.post('https://www.swollenhippo.com/DS3870/Tasks/newTask.php',{​ strSessionID: strMySessionID, strLocation:strMyLocation, strTaskName:strMyTaskName, datDueDate:strMyDate,strNotes:strMyNotes }​,function(result){​
+            $.post('https://www.swollenhippo.com/DS3870/Tasks/newTask.php',{ strSessionID: strMySessionID, strLocation:strMyLocation, strTaskName:strMyTaskName, datDueDate:strMyDate,strNotes:strMyNotes},function(result){
                 let objResult = JSON.parse(result);
-                if(objResult.Outcome != 'Error'){​
-                    Swal.fire({​
+                if(objResult.Outcome != 'Error'){
+                    Swal.fire({
                         position: 'top-end',
                         icon: 'success',
                         title: 'Task Added!',
                         showConfirmButton: false,
                         timer: 1500
-                      }​)
+                     })
                       $('#txtTaskName').val('');
                       $('#txtLocation').val('');
                       $('#txtDueDate').val('');
                       $('#txtNotes').val('');
-                }​ else {​
-                    Swal.fire({​
+               } else {
+                    Swal.fire({
                         icon: 'error',
                         title: 'Task Not Added',
                         html: '<p>Verify your task data and try again</p>'
-                    }​)
-                }​
-            }​)
-        }​ else {​
-            Swal.fire({​
+                   })
+               }
+           })
+       } else {
+            Swal.fire({
                 icon: 'error',
                 title: 'Expired Session',
                 html: '<p>Oops, appears your session has expired.  Click OK to go to login</p>'
-            }​).then((result)=>{​
+           }).then((result)=>{
                 sessionStorage.removeItem('HippoTaskID');
                 window.location.href = 'login.html';
-            }​)
-        }​
-    }​)
-}​)
+           })
+       }
+   })
+})

@@ -25,7 +25,7 @@
             let strMySessionID = sessionStorage.getIte('HippoTaskID');
             $.getJSON('https://www.swollenhippo.com/DS3870/Tasks/verifySession.php?strSessionID=+' + strMySessionID, function(result){
                 if(result.Outcome != 'Valid Session'){
-                    Swal.fire({​
+                    Swal.fire({
                     icon: 'error',
                     title: 'Expired Session',
                     html: '<p>Sesion Expired</p>'
