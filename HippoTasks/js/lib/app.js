@@ -241,3 +241,28 @@ $(document).on('click','#btnAddTask',function()
 
               
 })
+
+/*$(document).on('click','.btnTaskcomplete', function(){
+    let strTaskID = $(this).attr('data-taskID')
+    let strSessionID = sessionStorage.getitem('HippoTaskID');
+    $.post('https://www.swollenhippo.com/DS3870/Tasks/markTaskComplete.php', {strSessionID: strSessionID, strTaskID: strSessionID}, function.(result){
+        console.log(result);
+    })
+})
+$(document).on('click','.btnTaskdelete', function(){
+    console.log('delete clicked'+ $(this).attr('data-taskID'));
+})
+function fillTasks(){
+    $.getJSON('https://www.swollenhippo.com/DS3870/Tasks/getTasks.php',{strSessionID: sessionStorage.getitem('HippoTaskID')}, function(result){
+        console.log(result);
+        $('#tblTasks tbody').empty();
+        $.each(result,function(i,task){
+            if(task.status =='Active'){
+                let strTableHTML ='<tr><td>'+task.Mont+'</td><td>'+task.Location+'</td><td>'+task.Duedate+'</td><td>'+task.Notes+'</td><td><button class = "btn btn-success mr-2 btnTaskcomplete" data-taskID=" ' + task.taskID + '><complete</button><button class = "btn btn-danger ml-2 btnTaskdelete ' + task.taskID + '">Delete</button></td></tr>'
+                $('#tblTasks tbody').append(strTableHTML);
+            }
+           
+        })
+        })
+    }
+})
