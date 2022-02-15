@@ -16,7 +16,9 @@
         <textarea id="txtNotes" rows="3" class="form-control" aria-label="Task Notes" placeholder="Enter your notes"></textarea>
         <button id="btnAddTask" class="btn btn-success" type="button">Add Task</button> 
     </div>
-    <div class = "col-10 offset-1 mt-5">
+
+    <div class = "col-10 offset-1 mt-5" id="divTaskTable">
+        <button class = "btn btn-primary" id="toggleAdd">Toggle Add</button> 
         <table class ="table" id="tblTasks">
             <thead>
                 <tr>
@@ -26,7 +28,7 @@
                 </tr>
             </thead>
             <tbody>
-                
+
             </tbody>
         </table>
     </div>
@@ -36,7 +38,7 @@
     <script src = "js/lib/app.js"></script>
     <script>
         if(sessionStorage.getItem('HippoTaskID')){
-            let strMySessionID = sessionStorage.getIte('HippoTaskID');
+            let strMySessionID = sessionStorage.getItem('HippoTaskID');
             $.getJSON('https://www.swollenhippo.com/DS3870/Tasks/verifySession.php?strSessionID=+' + strMySessionID, function(result){
                 if(result.Outcome != 'Valid Session'){
                     Swal.fire({
@@ -44,8 +46,11 @@
                     title: 'Expired Session',
                     html: '<p>Sesion Expired</p>'
                 }).then((result)=>{
+                sessionStorage.removeItem('HippoTaskID');
                 window.location.href = 'login.html';
                  })
+                } else{
+                    fillTasks();
                 }
             })
         }else {
