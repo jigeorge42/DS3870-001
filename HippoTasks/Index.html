@@ -39,7 +39,7 @@
     <script>
         if(sessionStorage.getItem('HippoTaskID')){
             let strMySessionID = sessionStorage.getItem('HippoTaskID');
-            $.getJSON('https://www.swollenhippo.com/DS3870/Tasks/verifySession.php?strSessionID=+' + strMySessionID, function(result){
+            $.getJSON('https://www.swollenhippo.com/DS3870/Tasks/verifySession.php?strSessionID=' + strMySessionID, function(result){
                 if(result.Outcome != 'Valid Session'){
                     Swal.fire({
                     icon: 'error',

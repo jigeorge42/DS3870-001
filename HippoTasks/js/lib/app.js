@@ -36,7 +36,7 @@ $(document).on('click','#btnNewAccount',function(){
     
     else{  $.post('https://www.swollenhippo.com/DS3870/Tasks/newAccount.php',{strUsername: stryMyUsername, strPassword: strMyPassword}, function(result){
         let objResult = JSON.parse(result);
-        if(objResult.outcome == 'New User Created'){
+        if(objResult.Outcome == 'New User Created'){
             Swal.fire({
                 icon: 'success',
                 title: 'User Created',
@@ -45,19 +45,19 @@ $(document).on('click','#btnNewAccount',function(){
            }).then((result)=>{
                 window.location.href = 'login.html';
            })
-       } else if(objResult.outcome == 'User already exists'){
+        } else if(objResult.Outcome == 'User already exists'){
             Swal.fire({
                 icon: 'error',
                 title: 'User not Created',
                 html: '<p>Your account was not successful. User already exists</p>'
            })
-       } else {
+        } else {
             Swal.fire({
             icon: 'error',
             title: 'User not Created',
             html: '<p>Please check username and password and try agian</p>'
            })
-       }
+        }
    })}
 
    function validUsernameFormat(strUsername){
@@ -74,71 +74,68 @@ $(document).on('click','#btnNewAccount',function(){
 
 })
 
+$(document).on('click','#btnLogin',function(){
+    let strMyUsername = $('#txtUsername').val();
+    let strMyPassword = $('#txtPassword').val();
+    let blnError = false;
+    let strErrorMessage = '';
 
-
-
-    $(document).on('click','#btnLogin',function(){
-        let strMyUsername = $('#txtUsername').val();
-        let strMyPassword = $('#txtPassword').val();
-        let blnError = false;
-        let strErrorMessage = '';
+    if($('#txtUsername').val() == false)
+    {
+        blnError = true;
+        strErrorMessage += '<p>Email/username is blank</p>';
+    }
+    else if(validUsernameFormat($('#txtUsername').val()) == false){
+        blnError = true;
+        strErrorMessage +='<p>Email/Username is not valid</p>';
+    }
     
-        if($('#txtUsername').val() == false)
-        {
-            blnError = true;
-            strErrorMessage += '<p>Email/username is blank</p>';
-        }
-        else if(validUsernameFormat($('#txtUsername').val()) == false){
-            blnError = true;
-            strErrorMessage +='<p>Email/Username is not valid</p>';
-        }
-        
-        if(!$('#txtPassword').val())
-        {
-            blnError = true;
-            strErrorMessage += '<p>Password is blank</p>';
-        }
-        else if(validPasswordFormat($('#txtPassword').val())== false)
-        {
-            blnError = true;
-            strErrorMessage +='<p>Password is blank</p>';
-        }
-    
-        if(blnError == true)
-        {
+    if(!$('#txtPassword').val())
+    {
+        blnError = true;
+        strErrorMessage += '<p>Password is blank</p>';
+    }
+    else if(validPasswordFormat($('#txtPassword').val())== false)
+    {
+        blnError = true;
+        strErrorMessage +='<p>Password is blank</p>';
+    }
+
+    if(blnError == true)
+    {
+        Swal.fire({
+            icon: 'error',
+            title: 'Missing Data...',
+            html: strErrorMessage
+            })
+    }
+    else{ 
+        $.post('https://www.swollenhippo.com/DS3870/Tasks/newSession.php',{strUsername: strMyUsername, strPassword: strMyPassword},function(result){
+        let objResult = JSON.parse(result);
+        if(objResult.Outcome == 'Login Failed'){
             Swal.fire({
                 icon: 'error',
-                title: 'Missing Data...',
-                html: strErrorMessage
-              })
+                title: 'Username or Password is Incorrect',
+                html: '<p>Verify your username and password and try again</p>'
+            })
+        } else {
+            sessionStorage.setItem('HippoTaskID', objResult.Outcome);
+            window.location.href = 'index.html';
         }
-        else{ 
-            $.post('https://www.swollenhippo.com/DS3870/Tasks/newSession.php',{strUsername: strMyUsername, strPassword: strMyPassword},function(result){
-            let objResult = JSON.parse(result);
-            if(objResult.Outcome == 'Login Failed'){
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Username or Password is Incorrect',
-                    html: '<p>Verify your username and password and try again</p>'
-               })
-           } else {
-                sessionStorage.setItem('HippoTaskID', objResult.Outcome);
-                window.location.href = 'index.html';
-           }
-       })}
+    })}
 
-       function validUsernameFormat(strUsername){
-        let reg = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-       let blnMatchesFormat = reg.test(strUsername);
-        return blnMatchesFormat;  
-        }
+    function validUsernameFormat(strUsername){
+    let reg = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+    let blnMatchesFormat = reg.test(strUsername);
+    return blnMatchesFormat;  
+    }
+
+    function validPasswordFormat(strPassword){
+        let reg = /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,64})/;
+        return reg.test(strPassword);
+    }
     
-        function validPasswordFormat(strPassword){
-            let reg = /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,64})/;
-            return reg.test(strPassword);
-        }
-       
-    })
+})
 
 $(document).on('click','#btnAddTask',function()
 {
@@ -203,7 +200,7 @@ $(document).on('click','#btnAddTask',function()
                   })
             }
 
-            else{  $.post('https://www.swollenhippo.com/DS3870/Tasks/newTask.php',{ strSessionID: strMySessionID, strLocation:strMyLocation, strTaskName:strMyTaskName, datDueDate:strMyDate,strNotes:strMyNotes},function(result){
+            else{ $.post('https://www.swollenhippo.com/DS3870/Tasks/newTask.php',{ strSessionID: strMySessionID, strLocation:strMyLocation, strTaskName:strMyTaskName, datDueDate:strMyDate,strNotes:strMyNotes},function(result){
                 let objResult = JSON.parse(result);
                 if(objResult.Outcome != 'Error'){
                     Swal.fire({
@@ -237,9 +234,16 @@ $(document).on('click','#btnAddTask',function()
                     window.location.href = 'login.html';
             })
              }
-        
+    })
+})
 
-              
+$(document).on('click','.btnTaskdelete', function(){
+    let strTaskID = $(this).attr('data-taskID');
+    let strSessionID = sessionStorage.getitem('HippoTaskID');
+    $.post('https://www.swollenhippo.com/DS3870/Tasks/deleteTask.php', {strSessionID: strSessionID.getItem('HippoTaskID'), strTaskID: strSessionID}, function(result){
+        console.log(result);
+        fillTasks();
+    })
 })
 
 $(document).on('click','.btnTaskcomplete', function(){
@@ -255,16 +259,8 @@ $(document).on('click','#toggleAdd',function(){
     $('#divAddNewTask').slideToggle();
 })
 
-$(document).on('click','.btnTaskdelete', function(){
-    let strTaskID = $(this).attr('data-taskID');
-    let strSessionID = sessionStorage.getitem('HippoTaskID');
-    $.post('https://www.swollenhippo.com/DS3870/Tasks/deleteTask.php', {strSessionID: strSessionID.getItem('HippoTaskID'), strTaskID: strSessionID}, function(result){
-        console.log(result);
-        fillTasks();
-    })
-})
 function fillTasks(){
-    $.getJSON('https://www.swollenhippo.com/DS3870/Tasks/getTasks.php',{strSessionID: sessionStorage.getitem('HippoTaskID')}, function(result){
+    $.getJSON('https://www.swollenhippo.com/DS3870/Tasks/getTasks.php',{strSessionID: sessionStorage.getItem('HippoTaskID')}, function(result){
         console.log(result);
         $('#tblTasks tbody').empty();
         $.each(result,function(i,task){
@@ -276,4 +272,3 @@ function fillTasks(){
         })
         })
     }
-})
