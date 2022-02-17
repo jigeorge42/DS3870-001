@@ -90,7 +90,7 @@ $(document).on('click','#btnLogin',function(){
         strErrorMessage +='<p>Email/Username is not valid</p>';
     }
     
-    if(!$('#txtPassword').val())
+    if($('#txtPassword').val() == false)
     {
         blnError = true;
         strErrorMessage += '<p>Password is blank</p>';
@@ -237,19 +237,19 @@ $(document).on('click','#btnAddTask',function()
     })
 })
 
-$(document).on('click','.btnTaskdelete', function(){
+$(document).on('click','.btnTaskDelete', function(){
     let strTaskID = $(this).attr('data-taskID');
-    let strSessionID = sessionStorage.getitem('HippoTaskID');
-    $.post('https://www.swollenhippo.com/DS3870/Tasks/deleteTask.php', {strSessionID: strSessionID.getItem('HippoTaskID'), strTaskID: strSessionID}, function(result){
+    let strSessionID = sessionStorage.getItem('HippoTaskID');
+    $.post('https://www.swollenhippo.com/DS3870/Tasks/deleteTask.php', {strSessionID: sessionStorage.getItem('HippoTaskID'), strTaskID: strSessionID}, function(result){
         console.log(result);
         fillTasks();
     })
 })
 
-$(document).on('click','.btnTaskcomplete', function(){
+$(document).on('click','.btnTaskComplete', function(){
     let strTaskID = $(this).attr('data-taskID');
-    let strSessionID = sessionStorage.getitem('HippoTaskID');
-    $.post('https://www.swollenhippo.com/DS3870/Tasks/markTaskComplete.php', {strSessionID: strSessionID.getItem('HippoTaskID'), strTaskID: strSessionID}, function(result){
+    let strSessionID = sessionStorage.getItem('HippoTaskID');
+    $.post('https://www.swollenhippo.com/DS3870/Tasks/markTaskComplete.php', {strSessionID: sessionStorage.getItem('HippoTaskID'), strTaskID: strSessionID}, function(result){
         console.log(result);
         fillTasks();
     })
@@ -261,13 +261,15 @@ $(document).on('click','#toggleAdd',function(){
 
 function fillTasks(){
     $.getJSON('https://www.swollenhippo.com/DS3870/Tasks/getTasks.php',{strSessionID: sessionStorage.getItem('HippoTaskID')}, function(result){
-        console.log(result);
+       console.log(result);
         $('#tblTasks tbody').empty();
         $.each(result,function(i,task){
-            if(task.status =='Active'){
-                let strTableHTML ='<tr><td>'+task.Month+'</td><td>'+task.Location+'</td><td>'+task.Duedate+'</td><td>'+task.Notes+'</td><td><button class = "btn btn-success mr-2 btnTaskcomplete" data-taskID=" ' + task.taskID + '><complete</button><button class = "btn btn-danger ml-2 btnTaskdelete ' + task.taskID + '">Delete</button></td></tr>'
-                $('#tblTasks tbody').append(strTableHTML);
-            }
+                if(task.Status == 'ACTIVE'){
+                    let strTableHTML ='<tr><td>'+task.Name+'</td><td>'+task.Location+'</td><td>'+task.DueDate+'</td><td>'+task.Notes+'</td><td><button class="btn btn-success mr-2 btnTaskComplete" data-taskid="' + task.taskID + '">Complete</button><button class="btn btn-danger ml-2 btnTaskDelete" data-taskid="' + task.taskID + '">Delete</button></td></tr>'
+                    $('#tblTasks tbody').append(strTableHTML);
+                }
+               
+            
            
         })
         })
