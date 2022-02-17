@@ -62,7 +62,7 @@ $(document).on('click','#btnNewAccount',function(){
 
    function validUsernameFormat(strUsername){
     let reg = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-   let blnMatchesFormat = reg.test(strUsername);
+    let blnMatchesFormat = reg.test(strUsername);
     return blnMatchesFormat;  
     }
 

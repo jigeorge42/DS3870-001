@@ -1,0 +1,4 @@
+we can secure the our programs for unathurized use through API's using 
+the key value pairs to ensure the user who is using it is authorized. We can 
+also make sure we keep sensitive information in the session and not the l
+local storage. 
